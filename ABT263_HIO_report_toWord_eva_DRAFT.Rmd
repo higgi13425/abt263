@@ -1,0 +1,136 @@
+---
+title: "HIO Analysis of ABT-263 Anti-Fibrotic Therapy"
+author: "Eva Rodansky and Peter Higgins"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggridges)
+library(ggsignif)
+library(readxl)
+library(here)
+
+tidygenes <- read_excel(here::here("abt263_hio_tidy.xlsx"),
+                        sheet = "abt263_hio_geneexp_tidy")
+
+tidyproteins <- read_excel(here::here("abt263_hio_tidy.xlsx"),
+                          sheet = "abt263_hio_protein_tidy")
+
+```
+
+# Evaluation of the BH-3 mimetic ABT-263 as an anti-fibrotic drug in the human intestinal organoid model of intestinal fibrosis 
+
+## Study Background:
+
+Study Background:  The persistence of activated myofibroblasts is a key driver of fibrosis (3).  BH-3 mimetic drugs that inhibit pro-survival BCL-2 family members have been shown to induce the sensitivity of myofibroblasts to apoptosis, which could potentially lead to reversal of fibrosis.  The BH3-mimetic compounds were initially developed as a novel approach for treating chemo-resistant cancers (4), but their potential as anti-fibrotics has more recently been discovered (Keystone fibrosis meeting 2016).  ABT-263 (Navitoclax) inhibits Bcl-xL, Bcl-2 and Bcl-w, and has been shown to reverse established fibrosis in the murine bleomycin skin fibrosis model.  In comparison, ABT-199 (Venetoclax), a Bcl-2 –selective inhibitor, failed to reverse fibrosis.  (Data presented at Keystone Fibrosis meeting 2016)
+
+Preliminary data in in vitro fibrosis models in our lab indicate that co-treatment of human intestinal myofibroblasts with 1 µM ABT-263 during fibrogenic induction by either fibrogenic cytokine stimulation, or by culture of cells on a pathologically stiff substrate, abrogates induction of fibrotic gene expression.  We expect further in vitro studies to confirm sensitivity of myofibroblasts to apoptosis, and to show knockdown of the fibrogenic proteins α-SMA and type I collagen to baseline.  We expect similar abrogation of fibrogenic gene and protein expression in our pre-clinical animal models.  We also expect histological analysis of our rodent models to show that treatment with ABT-263 reduces tissue damage and collagen infiltration/accumulation.
+
+
+## Study Objective and Hypothesis:  
+
+The objective of this study is to advance ABT-263, a candidate anti-fibrotic compound with promising results in standard 2-dimensional culture of human intestinal myofibroblasts, to the testing of its anti-fibrotic efficacy in human intestinal organoids, which better recapitulate the multiple cell types and 3-dimensional architecture of the human intestine. The goal of this study is to provide sufficient preliminary data to obtain funding to move this compound into clinical development.  Our therapeutic hypothesis is that ABT-263 will reverse TGF-β-mediated fibrogenic gene and protein induction in human intestinal organoids.
+
+
+## Hypothesis and Aims
+
+### Hypothesis
+Determine whether ABT-263 can reverse fibrosis in the human intestinal organoid model of intestinal fibrosis.
+
+### Aims
+
+- Determine whether Gene Expression of Collagen 1 (COL1A1), MYLK, FN1, ACTA2 is reduced by ABT-263.
+- Determine whether Protein expression of αSMA is reduced by ABT-263.
+
+
+# Experimental Design
+
+## Human Intestinal Organoid Model
+
+All work is approved by the University of Michigan Human Pluripotent Stem Cell Research Oversight Committee (HPSCRO).  Human embryonic stem cells (H9, Wicell Research Institute, Madison, WI) will be differentiated into human intestinal organoids (HIOs) as described previously (1). For the purpose of this study, organoids with high mesenchymal cell composition are chosen, as opposed to cyst-like, epithelial-high organoids. For TGF-β treatment, HIOs will be embedded in growth factor-reduced Matrigel (BD Biosciences, San Jose, CA) within wells of a 24-well plate, and overlaid with Advanced DMEM/F12 media (Invitrogen, Carlsbad, CA) containing the various treatments.  
+
+Organoids will be serum-starved for 24 hours, followed by 96 hours of co-treatment of various concentrations of ABT-263 with 2 ng/mL TGF-β, in serum-free culture medium, with treatment media changed every 24 hours.   Based on our previous study, which showed that the anti-fibrotic drug spironolactone was effective in HIOs at 2.5 times the effective dose in 2D myofibroblast culture (2), we anticipate testing ABT-263 at 1 uM, 2.5 uM, and 5 uM in HIOs.   At 96 hours, HIOs will be processed for RNA or protein extraction, followed by downstream analysis of fibrogenic  genes (COL1A1, ACTA2, MYLK) or α-SMA protein, as described in (2). We will not quantitate collagen 1 protein  because it is not possible to separate collagen produced by the HIOs from the collagen protein of the Matrigel in which the HIOs are cultured.   For gene expression analysis, HIOs will be plated at 3-4 organoids per well, with each treatment performed in triplicate wells.  For protein analysis, 9-12 organoids will be pooled per sample, washed, lysed, and run on SDS-PAGE, followed by western blotting to detect α-SMA.  
+
+
+
+##Gene Expression:  Data is presented as a meta-analysis over 4 experiments.
+
+
+```{r echo=FALSE, fig.cap = "Inhibition of Fibrogenic Gene Expression by ABT-263:  Meta-Analysis over 4 Biological Experiments", fig.height=3}
+knitr::include_graphics("abt263_hio_geneexp_metan.png")
+
+```
+
+
+
+
+## αSMA Protein Expression  
+
+
+```{r echo=FALSE, fig.cap = "ORG-45 αSMA Protein Expression", fig.height=3}
+knitr::include_graphics("org45_sma_protein.png")
+
+```
+
+```{r echo=FALSE, fig.cap = "ORG-46 αSMA Protein Expression", fig.height=3}
+knitr::include_graphics("org46_sma_protein.png")
+
+```
+
+```{r echo=FALSE, fig.cap = "ORG-47 αSMA Protein Expression", fig.height=3}
+knitr::include_graphics("org47_sma_protein.png")
+
+```
+
+
+
+
+```{r aSMA, echo=FALSE, fig.width= 15, fig.height= 8}
+tidyproteins %>% 
+  filter(protein == "sma") %>% 
+  ggplot(.,aes(x= as.factor(category), y = norm_densitometry) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 1.3,comparisons = list(c("1", "2")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 1.5,comparisons = list(c("1", "6")),          
+              test="t.test", textsize = 5) +
+  geom_signif(y_position = 1.7,comparisons = list(c("1", "7")),          
+              test="t.test", textsize = 5)+
+  scale_x_discrete(labels = c("1" = "TGFβ", 
+                              "2" = "TGFβ +\n250uM SPIR",
+                              "3" = "TGFβ +\n10uM Tofa",
+                              "4" = "TGFβ +\n1uM ABT263",
+                              "5" = "TGFβ +\n3uM ABT263",
+                              "6" = "TGFβ +\n10uM ABT263",
+                              "7" = "TGFβ +\n30uM ABT263")) +
+  labs(y = "band densitometry\n(norm to GAPDH)", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("HIO αSMA Protein Expression") +
+  theme_gray(base_size = 20) +
+  theme(axis.title.y = element_text(angle=0)) 
+    
+
+ggsave(here("hio_asma_prot_abt263.png"))
+
+```
+
+αSMA protein expression was induced in all 3 biological replicates in the HIO model, although induction levels varied among the experiments.  In a comparison of αSMA abrogation relative to the induced level within each experiment, αSMA protein was significantly reduced with 10 uM (p=0.046) and 30 uM ABT-263 (p=0.0099).
+
+
+```
+
+# Conclusions
+
+
+* ABT-263 shows antifibrotic efficacy at 10 uM in the human intestinal organoid Model.  At this dose, western blot analysis shows significant protein loss, indicated by difficulty achieving equivalent levels of loading control in those samples.  This was observed using both β-actin (loading control shown) and GAPDH (data not shown) for these experiments.  Since ABT-263 sensitizes activated myofibroblasts to apoptosis, the HIOs used in these studies were selected to be heavily "mesenchymal-type," and the HIOs are being induced by the fibrogenic cytokine TGFβ, this could explain the cytotoxicity. This outcome (loss of myofibroblasts through apoptosis) is desired and is a component of anti-fibrotic efficacy. Of the cells that remain, the αSMA protein levels are reduced. 
+*
+ 
+
+
+
+
