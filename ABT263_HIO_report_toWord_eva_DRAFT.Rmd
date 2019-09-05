@@ -117,6 +117,7 @@ tidyproteins %>%
 
 ggsave(here("hio_asma_prot_abt263.png"))
 
+
 ```
 
 αSMA protein expression was induced in all 3 biological replicates in the HIO model, although induction levels varied among the experiments.  In a comparison of αSMA abrogation relative to the induced level within each experiment, αSMA protein was significantly reduced with 10 uM (p=0.046) and 30 uM ABT-263 (p=0.0099).

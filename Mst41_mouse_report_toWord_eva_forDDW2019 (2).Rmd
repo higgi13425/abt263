@@ -1,0 +1,391 @@
+---
+title: "Analysis of ABT-263 Anti-Fibrotic Therapy"
+author: "Eva Rodansky and Peter Higgins"
+# date: "21 May 2018"
+output: word_document
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggridges)
+library(ggsignif)
+library(readxl)
+library(here)
+
+tidygenes <- read_excel(here::here("MST-41tidy.xlsx"),
+                        sheet = "mst41_geneexp_tidy")
+
+tidyweights <- read_excel(here::here("MST-41tidy.xlsx"),
+                          sheet = "colonweight_tidy")
+tidyproteins <- read_excel(here::here("MST-41tidy.xlsx"),
+                          sheet = "protein_tidy")
+tidyhisto <- read_excel(here::here("MST-41tidy.xlsx"),
+                          sheet = "histoscore_tidy")
+```
+
+# Evaluation of the BH-3 mimetic ABT-263 as an anti-fibrotic drug in the Salmonella typhimurium mouse model of intestinal fibrosis 
+
+## Study Background:
+
+Study Background:  The persistence of activated myofibroblasts is a key driver of fibrosis (3).  BH-3 mimetic drugs that inhibit pro-survival BCL-2 family members have been shown to induce the sensitivity of myofibroblasts to apoptosis, which could potentially lead to reversal of fibrosis.  The BH3-mimetic compounds were initially developed as a novel approach for treating chemo-resistant cancers (4), but their potential as anti-fibrotics has more recently been discovered (Keystone fibrosis meeting 2016).  ABT-263 (Navitoclax) inhibits Bcl-xL, Bcl-2 and Bcl-w, and has been shown to reverse established fibrosis in the murine bleomycin skin fibrosis model.  In comparison, ABT-199 (Venetoclax), a Bcl-2 –selective inhibitor, failed to reverse fibrosis.  (Data presented at Keystone Fibrosis meeting 2016)
+
+Preliminary data in in vitro fibrosis models in our lab indicate that co-treatment of human intestinal myofibroblasts with 1 µM ABT-263 during fibrogenic induction by either fibrogenic cytokine stimulation, or by culture of cells on a pathologically stiff substrate, abrogates induction of fibrotic gene expression.  We expect further in vitro studies to confirm sensitivity of myofibroblasts to apoptosis, and to show knockdown of the fibrogenic proteins α-SMA and type I collagen to baseline.  We expect similar abrogation of fibrogenic gene and protein expression in our pre-clinical animal models.  We also expect histological analysis of our rodent models to show that treatment with ABT-263 reduces tissue damage and collagen infiltration/accumulation.
+
+
+## Study Objective and Hypothesis:  
+
+The objective of this study is to advance ABT-263, a candidate anti-fibrotic compound with promising results in vitro to testing of efficacy in animal models of intestinal fibrosis and to provide sufficient preliminary data to obtain funding to move this compound into clinical development.  Our therapeutic hypothesis is that ABT-263 will reduce fibrogenic gene and protein expression in the Salmonella typhimurium model of intestinal fibrosis.  We also expect histological analysis to show that treatment with ABT-263 reduces tissue damage and collagen infiltration/accumulation.
+
+
+## Hypothesis and Aims
+
+### Hypothesis
+Determine whether ABT-263 can reverse fibrosis in the mouse Salmonella typhimurium model of intestinal fibrosis.
+
+### Aims
+- Determine whether Colon Weight is reduced by ABT-263.
+- Determine whether Gene Expression of Collagen 1 (COL1A1), IGF1, TGFβ, CTGF is reduced by ABT-263.
+- Determine whether Protein expression of Collagen 1, αSMA is reduced by ABT-263.
+- Determine whether histopathological analysis shows a significant (>30%) decrease in fibrosis score with ABT-263 treatment.
+
+# Experimental Design
+
+## Murine Salmonella Typhimurium Model
+
+The murine S. typhimurium intestinal fibrosis model is a particularly powerful approach for assaying the effects of anti-fibrotic compounds. Infection with the murine pathogen S. typhimurium triggers an inflammatory response, largely in the cecum, which progresses to a fibrosing phenotype by day 14 post-infection (1). As we have demonstrated, fibrosis is initiated at day 4 post-infection and progresses despite removal of the inflammatory stimulus and reduction of intestinal inflammation (2).  We will determine the efficacy of ABT-263 to reverse intestinal fibrosis in the mouse S. typhimurium model of intestinal fibrosis.
+
+Female 8–12-week-old CBA/J mice (Jackson Laboratories, Bar Harbor, ME) will receive 20 mg streptomycin to eradicate the commensal microbiota 24 hours prior to infection with 1x106 colony-forming units (cfu) S. typhimurium strain SL1344 by oral gavage. Control mice will receive streptomycin and vehicle by oral gavage.  Levofloxacin intervention to eradicate S. typhimurium will be initiated on day 8 and continued until sacrifice at day 21 post-infection. Treatment with ABT-263 will be initiated on day 12 and continued until sacrifice at day 21 post-infection.  Treatment groups will receive ABT-263 once per day, by PO, with the high dose group receiving drug at 100 mg/kg, and the low dose group receiving drug at 20 mg/kg.  Negative and positive cohorts will receive vehicle on the same schedule.
+ 
+Animals will be humanely euthanized 21 days after S. typhimurium infection. The cecum will be harvested for gross pathology, histopathology, protein, and mRNA analysis as detailed in (2).
+
+
+## Experimental Design Diagram
+
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("MST-41 timeline and treatment arms.png")
+
+```
+
+
+
+# Results
+
+## Gross
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("mst41_controls_gross.png")
+
+```
+
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("mst41_fibrotic_gross.png")
+
+```
+The fibrotic (positive control) intestines are thicker and heavier than the HBSS negative controls and the ABT-263 drug control colons. They are narrowed and stiff, and retain very little stool (pale, contain no brown lumps) in the cecum and proximal colon (top of each picture)
+
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("mst41_lowdose_gross.png")
+
+```
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("mst41_highdose_gross.png")
+
+
+```
+
+The ABT-263 intestines are thinner, softer, and lighter in weight (after washing out all remaining contents) than the fibrotic positive control  colons. 
+
+## Cecum + Colon Weight
+
+```{r weight, echo=FALSE, fig.width= 14, fig.height= 6}
+ggplot(tidyweights, aes(x= as.factor(category), y = cec_col_wt) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 0.68,comparisons = list(c("1", "3")), test="t.test", textsize=5) +
+  geom_signif(y_position = 0.70,comparisons = list(c("3", "4")), test="t.test", textsize=5) +
+  geom_signif(y_position = 0.72,comparisons = list(c("3", "5")), test="t.test", textsize=5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced\nFibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "Colon Weight (grams)", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+          theme_minimal(base_size=20) +
+  ggtitle("ABT-263 Colon Weight Results")
+ggsave(here("abt263_colonweight.png"))
+
+tidyweights %>%   
+  group_by(category) %>% 
+  summarize(fold_mean = mean(cec_col_wt))
+pct_change <- (0.5958-0.4605)*100/(0.5958-0.4722)
+pct_change
+```
+
+## PK Analysis
+Samples of serum collected at approximately 24 hours following the final dose of ABT-263 have been shipped to AbbVie for analysis.  Samples were delivered on 5/23/18.
+
+
+## Histology and Fibrosis Scoring
+
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("MST-41_Trichrome.png")
+
+```
+Fibrotic intestines have increased tissue disorganization, increased trichrome staining (blue) indicative of collagen deposition, and areas of ulceration.  Sections from both treatment groups appear similar to the fibrotic sections. 
+
+```{r, echo=FALSE, message=FALSE}
+tidyhisto %>%
+ ggplot(.,aes(x=fibrosis, y= as.factor(category))) + 
+   labs(y=" ") +
+  geom_density_ridges(aes(point_color=category), 
+    jittered_points=TRUE, alpha=0.5, scale=0.7) +
+   scale_y_discrete(labels = c("1" = "Untreated", 
+                              "2" = "AF Medication control",
+                              "3" = "Fibrosis + Low Dose AF",
+                              "4" = "Fibrosis + High Dose AF",
+                              "5" = "Induced Fibrosis")) +
+  xlim(0,3) +
+   theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("Histopathologic Fibrosis Score")
+ggsave(here("abt263_histopath.png"))
+```
+
+Fibrotic and treated cecum sections have increased fibrosis scores as compared with the untreated and drug control groups.  No significant difference in fibrosis score was found among the fibrotic, low dose, and high dose treatment groups.
+
+## TGFβ Gene Expression
+
+```{r , echo=FALSE, fig.width= 14, fig.height= 6}
+# consider width 12, ht 7 for printing
+tidygenes %>% 
+  filter(gene == "tgfb") %>% 
+  ggplot(.,aes(x= as.factor(category), y = fold) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 3.0,comparisons = list(c("1", "3")), test="t.test", textsize=5) +
+  geom_signif(y_position = 3.2,comparisons = list(c("3", "4")), test="t.test", textsize=5) +
+  geom_signif(y_position = 3.5,comparisons = list(c("3", "5")), test="t.test", textsize=5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263 \nMedication control",
+                              "3" = "Induced \nFibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "TGFb Expression", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  theme_minimal(base_size = 20) +
+  ggtitle("ABT-263 TGFb Expression")
+ggsave(here("abt263_tgfb.png"))
+tidygenes %>% 
+  filter(gene == "tgfb") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(fold))
+pct_change <- (2.15-1.54)*100/(2.15-1.052)
+pct_change
+```
+
+TGF beta gene expression was induced in the model, with gene expression increased more than 2 fold (p=0.0002). This was significantly reduced by both low-dose ABT-263 (p=0.0016), and by high-dose ABT-263 (p=0.017). 
+
+## CTGF Gene Expression
+
+```{r ctgf, echo=FALSE, fig.width= 14, fig.height= 6}
+tidygenes %>% 
+  filter(gene == "ctgf") %>% 
+  ggplot(.,aes(x= as.factor(category), y = fold) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 6.4,comparisons = list(c("1", "3")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 7.6,comparisons = list(c("3", "4")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 8.5,comparisons = list(c("3", "5")), test="t.test", textsize = 5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "CTGF Expression", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  theme_minimal(base_size = 20) +
+  ggtitle("ABT-263 CTGF Expression")
+ggsave(here("abt263_ctgf.png"))
+
+tidygenes %>%   
+  filter(gene == "ctgf") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(fold))
+pct_change <- (4.32-1.808)*100/(4.32-1.106)
+pct_change
+```
+
+CTGF gene expression was induced in the model, with gene expression increased nearly 4 fold (p=0.00039). This was significantly reduced by both low-dose ABT-263 (p=0.032), and by high-dose ABT-263 (p=0.0029). 
+
+## IGF-1 Gene Expression
+```{r igf1, echo=FALSE, fig.width= 14, fig.height= 6}
+tidygenes %>% 
+  filter(gene == "igf1") %>% 
+  ggplot(.,aes(x= as.factor(category), y = fold) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 4.9,comparisons = list(c("1", "3")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 5.2,comparisons = list(c("3", "4")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 5.5,comparisons = list(c("3", "5")), test="t.test", textsize = 5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+    labs(y = "IGF-1 Expression", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  theme_minimal(base_size = 20) +
+  ggtitle("ABT-263 IGF-1 Expression")
+ggsave(here("abt263_igf1.png"))
+
+tidygenes %>%   
+  filter(gene == "igf1") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(fold))
+pct_change <- (3.686-2.733)*100/(3.686-1.009)
+pct_change
+```
+
+IGF-1 gene expression was induced in the model, with gene expression increased nearly 4 fold (p=0.0000018). This was significantly reduced by low-dose ABT-263 (p=0.0089), and numerically reduced by high-dose ABT-263 (p=0.11 due to an outlier). 
+
+## COL1A1 Gene Expression
+
+```{r col1, echo=FALSE, fig.width= 14, fig.height= 6}
+tidygenes %>% 
+  filter(gene == "col1a1") %>% 
+  ggplot(.,aes(x= as.factor(category), y = fold) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 3.0,comparisons = list(c("1", "3")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 3.2,comparisons = list(c("3", "4")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 3.5,comparisons = list(c("3", "5")), test="t.test", textsize = 5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "Collagen 1 Expression", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("ABT-263 Collagen 1 Expression") +
+    theme_minimal(base_size = 20) 
+
+ggsave(here("abt263_col1.png"))
+
+tidygenes %>%   
+  filter(gene == "col1a1") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(fold))
+pct_change <- (2.2518-1.94)*100/(2.2518-1.025)
+pct_change
+```
+
+Collagen 1 (col1A1) gene expression was induced in the model, with gene expression increased nearly 2.5 fold (p=0.00062). This was significantly reduced by both low-dose ABT-263 (p=0.063), and numerically reduced by high-dose ABT-263 (p=0.44 due to two outliers). 
+
+## COL3A1 Gene Expression
+
+```{r col3, echo=FALSE, fig.width= 12, fig.height= 7}
+tidygenes %>% 
+  filter(gene == "col3a1") %>% 
+  ggplot(.,aes(x= as.factor(category), y = fold) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 2.5,comparisons = list(c("1", "3")), test="t.test") +
+  geom_signif(y_position = 2.8,comparisons = list(c("3", "4")), test="t.test") +
+  geom_signif(y_position = 3.1,comparisons = list(c("3", "5")), test="t.test") +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "AF Medication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis + Low Dose AF",
+                              "5" = "Fibrosis + High Dose AF")) +
+  labs(y = "Colon Weight (grams)", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("MST-41 Collagen 3 Expression")
+```
+
+Collagen 3 (col3A1) gene expression was, as expected, not induced in the model, with no increase in gene expression (p=0.089). This was significantly reduced by low-dose ABT-263 (p=0.03), and not significantly changed by high-dose ABT-263 (p=0.71). 
+
+## aSMA Protein Expression
+
+```{r echo=FALSE, fig.cap = "MST-41 aSMA Protein Expression", fig.height=3}
+knitr::include_graphics("MST-41_aSMAprotein_fig.png")
+
+```
+
+```{r aSMA, echo=FALSE, fig.width= 16, fig.height= 8}
+tidyproteins %>% 
+  filter(protein == "sma") %>% 
+  ggplot(.,aes(x= as.factor(category), y = norm_densitometry) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 2.5,comparisons = list(c("1", "3")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 2.8,comparisons = list(c("3", "4")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 3.1,comparisons = list(c("3", "5")), test="t.test", textsize = 5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "aSMA Protein", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("ABT-263 aSMA Protein") +
+    theme_gray(base_size = 20) 
+
+ggsave(here("abt263_asmaprot.png"))
+
+tidyproteins %>%   
+  filter(protein == "sma") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(norm_densitometry))
+pct_change <- (1.189-0.5858)*100/(1.189-0.000897)
+pct_change
+```
+aSMA protein expression was induced in the model.  This was significantly reduced by high-dose ABT-263 (p=0.036).
+
+
+## Collagen 1 Protein Expression
+
+```{r echo=FALSE, fig.cap = "Mouse Collagen 1 Protein Expression", fig.height=3}
+knitr::include_graphics("MST-41_Col1protein_fig.png")
+
+```
+
+```{r Col1, echo=FALSE, fig.width= 16, fig.height= 8}
+tidyproteins %>% 
+  filter(protein == "col1") %>% 
+  ggplot(.,aes(x= as.factor(category), y = norm_densitometry) ) +
+  geom_boxplot() +
+  geom_signif(y_position = 2.5,comparisons = list(c("1", "3")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 2.8,comparisons = list(c("3", "4")), test="t.test", textsize = 5) +
+  geom_signif(y_position = 3.1,comparisons = list(c("3", "5")), test="t.test", textsize = 5) +
+  scale_x_discrete(labels = c("1" = "Untreated", 
+                              "2" = "ABT-263\nMedication control",
+                              "3" = "Induced Fibrosis",
+                              "4" = "Fibrosis +\nLow Dose ABT-263",
+                              "5" = "Fibrosis +\nHigh Dose ABT-263")) +
+  labs(y = "Collagen 1 Protein", x = "Treatment Group") +
+  theme(legend.position = "none", plot.title = element_text(face="bold")) +
+  ggtitle("ABT-263 Collagen 1 Protein") +
+    theme_gray(base_size = 20) 
+
+ggsave(here("abt263_col1prot.png"))
+
+tidyproteins %>%   
+  filter(protein == "col1") %>% 
+  group_by(category) %>% 
+  summarize(fold_mean = mean(norm_densitometry))
+pct_change <- (0.994399-0.60872)*100/(0.994399-0.05135)
+pct_change
+```
+
+Collagen 1 protein expression was induced in the model.  This was significantly reduced by high-dose ABT-263 (p=0.036).
+
+```{r echo=FALSE, fig.height=3}
+knitr::include_graphics("primary_endpoints.png")
+
+```
+
+# Conclusions
+
+
+* ABT-263 shows antifibrotic efficacy in the Salmonella Mouse Model.
+* Studies of ABT-263 antifibrotic efficacy in human intestinal organoids are ongoing.
+* Proposed studies in the TNBS Rat Model are being revised to include ultrasound and photoacoustic imaging as well as blood biomarkers of fibrosis.
+ 
+
+
+
+

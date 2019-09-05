@@ -1,0 +1,100 @@
+---
+title: "ABT263 Effects on Gene Expression in CCDs Treated with TGFbeta.Rmd"
+author: "Peter Higgins"
+date: "5/18/2019"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggridges)
+library(ggsignif)
+library(readxl)
+library(here)
+```
+
+
+### Read in data 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+ccdgenedata <- read_excel(here::here("ABT-263_Invitro_Expt_SGC.xlsx"),
+                        sheet = "TGFb_gene")
+ccdgenedata %>% 
+  select("Category...18" : "ACTA2...22") %>% 
+  slice(1:63) ->
+ccdgenedata
+
+names(ccdgenedata) <- c("Category", "Col1A1", "MYLK", "FN1", "ACTA2")
+
+ccdgenedata %>% 
+  filter(Category < 5) %>%   # remove "TGFb +\n1uM ABT-199"
+  mutate(Category = as.factor(Category)) -> 
+ccdgenedata
+
+labels = c("Untreated", "TGFβ", "TGFβ +\n1 uM ABT-263",
+           "TGFβ +\n3 uM ABT-263")
+
+ccdgenedata$Category <- ordered(ccdgenedata$Category,
+levels = c(1,2,3,4),
+labels = labels)
+
+
+```
+
+
+
+### Plot the Gene Expression data for powerpoint 
+
+
+```{r echo=FALSE, fig.cap = "ABT-263 Gene Expr vs TGFb", fig.height=4, fig.width=6}
+ccdgenedata %>% 
+  ggplot(aes(x=Category, y=MYLK)) +
+  geom_boxplot(outlier.size = -1, color="gray35") +
+  geom_jitter(width = 0.16, size=2, shape=21, stroke=1.2) +
+  #scale_fill_manual(values = c("pink", "red")) +
+  #scale_color_manual(values = c("blue", "black")) +
+  labs(title = "Myosin Light Chain Kinase Repression by ABT-263 \nvs. TGFβ Induction in Intestinal Myofibroblasts",
+       caption = "Incubated for 24 hours with TGFβ and ABT-263, Measurement by RT-PCR") +
+  theme_bw(base_size = 14) +
+  ylab("MYLK /\nGADPH Ratio") +
+  xlab("Treatment Group") +
+  theme(legend.position = 'none') +
+  geom_signif(y_position = 3.7,comparisons = list(c("TGFβ", "TGFβ +\n3 uM ABT-263")),  test="t.test", textsize = 5) +
+  geom_signif(y_position = 4.2,comparisons = list(c("TGFβ", "TGFβ +\n1 uM ABT-263")),  test="t.test", textsize = 5)
+
+
+ggsave(here('geneexprmylk.png'))
+  
+
+```
+
+## Make a cool table
+```{r}
+ccdgenedata %>% 
+  filter(Category == "TGFβ") %>% 
+  mutate(max_col = median(ACTA2))
+ccdgenedata %>% 
+  filter(Category == "Untreated") %>% 
+  mutate(min_col = median(ACTA2)) %>% 
+  summarize(col_base = mean(min_col))
+ccdgenedata %>% 
+  filter(Category == "TGFβ +\n1 uM ABT-263") %>% 
+  mutate(min_col = mean(ACTA2)) %>% 
+  summarize(col_base = mean(min_col))
+ccdgenedata %>% 
+  filter(Category == "TGFβ +\n3 uM ABT-263") %>% 
+  mutate(min_col = mean(ACTA2)) %>% 
+  summarize(col_base = mean(min_col))
+pct_red_1 <- (2.173-2.46)*100/(2.173-0.9513)
+pct_red_1
+pct_red_3 <- (4.57-3.26)*100/(4.57-0.9467)
+pct_red_3
+```
+

@@ -1,0 +1,76 @@
+---
+title: "PARP Analysis of ABT-263 Anti-Fibrotic Therapy"
+author: "Stephen G. Collins and Peter Higgins"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggridges)
+library(ggsignif)
+library(readxl)
+library(here)
+```
+
+
+### Read in data 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+parpdata <- read_excel(here::here("ABT-263_Invitro_Expt_SGC.xlsx"),
+                        sheet = "apop_prot")
+parpdata %>% 
+  select(grp...37, parp_norm_gapdh...41) %>% 
+  filter(!is.na(grp...37)) ->
+parpdata
+
+names(parpdata) <- c("Group", "PARP")
+
+parpdata %>% 
+  mutate(PARP = as.numeric(PARP),
+         Group = as.factor(Group),
+         fasl = case_when(Group %in% 2:5 ~ 1,
+                          TRUE ~ 0),
+         abt = case_when(Group %in% 3:6 ~ 1,
+                          TRUE ~ 0))->
+parpdata
+
+labels = c("Untreated", "Fas\nLigand", "FasL +\n100 nM\nABT-263",
+           "FasL +\n300 nM\nABT-263", "FasL +\n1000 nM\nABT-263",
+           "1000 nM\nABT-263")
+
+parpdata$Group <- ordered(parpdata$Group,
+levels = c(1,2,3,4,5,6),
+labels = labels)
+
+
+```
+
+
+
+
+### Plot the PARP data for powerpoint 
+
+
+```{r echo=FALSE, fig.cap = "ABT-263 Cleaved PARP", fig.height=4, fig.width=6}
+parpdata %>% 
+  ggplot(aes(x=Group, y=PARP)) +
+  geom_boxplot(outlier.size = -1, color="gray35") +
+  geom_jitter(width = 0.16, size=2, shape=21, stroke=1.2) +
+  labs(title = "Cleaved PARP Induction by ABT-263\nin Intestinal Myofibroblasts",
+       caption = "Incubated for 24 hours with FasL and ABT-263,\nMeasurement by Western Blot") +
+  theme_bw(base_size = 16) +
+  ylab("Cleaved PARP/\nGADPH Ratio") +
+  xlab("Treatment Group") +
+  theme(legend.position = 'none')
+
+ggsave(here('parp.png'))
+  
+
+```
