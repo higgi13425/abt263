@@ -74,3 +74,60 @@ ggsave(here('parp.png'))
   
 
 ```
+
+### Labeling 
+Let's talk about labeling axes.
+
+this is done with the _labs()_ function.
+Add it on to your plot with a + at the end of a line
+then labs() with several arguments within the parentheses.
+These can include
+- title = "Title"
+- x = "x axis label"
+- y = "y axis label"
+- subtitle = "This goes below the title"
+- caption = "This goes below the plot"
+- tag = "A - this goes in top left, to label a panel in a multi-panel plot"
+
+You can remove a label by setting it equal to null.
+
+If you have a legend, you can change the title of the legend by setting this in labs.
+
+- labs(color = "TGFb Treatment", shape = "ABT263 dose")
+
+### Color mapping
+You can map to a fixed color within ggplot or within a geom.
+The color must be in quotes, because it is not an object in the environment.
+For example, color = "maroon".
+
+You can map to a color determined by a variable, without quotes (because the variable is an object in the environment), but it has to be within the aes() function within either ggplot or a geom.
+
+The geoms 'inherit' aes mappings from ggplot, unless you over-write them in the geom.
+
+### line breaks in labels
+You can create a line break within a quoted label by inserting "\n"
+which calls for a new line.
+Try inserting a few line breaks into labels
+
+```{r edited plot}
+parpdata %>% 
+  ggplot(aes(x=Group, y=PARP, color = as.factor(abt))) +
+  geom_boxplot(outlier.size = -1, color="maroon") +
+  geom_jitter(width = 0.16, size=2, shape=21, stroke=1.2) +
+  labs(title = "Cleaved PARP Induction by ABT-263\nin Intestinal Myofibroblasts",
+       caption = "Incubated for 24 hours with FasL and ABT-263,\nMeasurement by Western Blot",
+       tag = "A",
+       y = "Cleaved PARP/GADPH Ratio",
+       x = "Treatment Group") +
+  theme_bw(base_size = 16) +
+  labs(color = "ABT") +
+  theme(legend.position = "bottom",  #top, left, none, right
+        plot.tag.position = "topright") +
+  theme(legend.position = c(0.85, 0.6)) + 
+  geom_signif(comparisons = list(c(2,3)), y_position = 2.3, color="black") +
+  theme(legend.background = element_rect(color="black",
+                                         fill = "lightblue"))
+
+```
+
+

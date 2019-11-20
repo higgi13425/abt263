@@ -1,6 +1,6 @@
 ---
-title: "HIO Analysis of ABT-263 Anti-Fibrotic Therapy"
-author: "Eva Rodansky and Peter Higgins"
+title: "Making Plot Functions with curly-curly"
+author: "Peter Higgins"
 output:
   word_document: default
   pdf_document: default
